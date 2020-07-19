@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rest.api.UserJpaRepo;
+import com.rest.api.advice.exception.CUserNotFoundException;
 import com.rest.api.entity.User;
 import com.rest.api.model.response.CommonResult;
 import com.rest.api.model.response.ListResult;
@@ -21,7 +22,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
 @Api(tags = {"1. User"})
-@RequiredArgsConstructor // class 상단에 선언해서 final 선언된 객체에 생성자 주입을 한다. 사용하지 않고 autowired를 사용해되 가능.
+@RequiredArgsConstructor // class 상단에 선언해서 final 선언된 객체에 생성자 주입을 한다. (lombok) 사용하지 않고 autowired (spring) 를 사용해도 가능.
 @RestController // 결과값을 json으로 표시
 @RequestMapping(value = "/v1")
 public class UserController {
@@ -40,9 +41,9 @@ public class UserController {
 	@GetMapping(value = "/user/{msrl}")
 	public SingleResult<User> findUserById(
 			@ApiParam(value = "회원ID", required = true) @PathVariable long msrl
-			){
+			) {
 		// 결과데이터가 단일건인경우 getSingleResult를 이용해서 결과를 출력한다.
-		return responseService.getSingleResult(userJpaRepo.findById(msrl).orElse(null));
+		return responseService.getSingleResult(userJpaRepo.findById(msrl).orElseThrow(CUserNotFoundException::new));
 	}
 	
 	@ApiOperation(value = "회원 입력", notes = "회원을 입력한다.")
