@@ -11,3 +11,6 @@ spring:
     properties:
       hibernate.hbm2ddl.auto: none
     show-sql: true
+  messages:
+    basename: i18n/exception
+    encoding: UTF-8
